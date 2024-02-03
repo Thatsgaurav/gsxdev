@@ -1,26 +1,23 @@
-import { Content, isFilled } from "@prismicio/client";
-import { PrismicRichText, SliceComponentProps } from "@prismicio/react";
-import { createClient } from "@/prismicio";
-import ContentList from "./ContentList";
 import Bounded from "@/components/Bounded";
 import Heading from "@/components/Heading";
-/**
- * Props for `BlogPostIndex`.
- */
-export type BlogPostIndexProps =
-  SliceComponentProps<Content.BlogPostIndexSlice>;
+import { Content, isFilled } from "@prismicio/client";
+import { PrismicRichText, SliceComponentProps } from "@prismicio/react";
+import ContentList from "./ContentList";
+import { createClient } from "@/prismicio";
 
-/**
- * Component for "BlogPostIndex" Slices.
- */
-const BlogPostIndex = async ({
+export type ContentIndexProps = SliceComponentProps<Content.ContentIndexSlice>;
+
+const ContentIndex = async ({
   slice,
-}: BlogPostIndexProps): Promise<JSX.Element> => {
+}: ContentIndexProps): Promise<JSX.Element> => {
   const client = createClient();
-  const blogPosts = await client.getAllByType("blog_post");
-  const projects = await client.getAllByType("project");
+  const blogPosts = await client.getAllByType("blog_post")
+  const projects = await client.getAllByType("project")
 
-  const items = slice.primary.content_type === "Blogs" ? blogPosts : projects;
+  const contentType = slice.primary.content_type || "Blog"
+  const items = contentType === "Blog" ? blogPosts : projects
+
+
 
   return (
     <Bounded
@@ -37,12 +34,11 @@ const BlogPostIndex = async ({
       )}
       <ContentList
         items={items}
-        contentType={slice.primary.content_type}
+        contentType={contentType}
         viewMoreText={slice.primary.view_more_text}
-        fallbackItemImage={slice.primary.fallback_item_image}
-      />
+        fallbackItemImage={slice.primary.fallback_item_image} />
     </Bounded>
   );
-};
+}
 
-export default BlogPostIndex;
+export default ContentIndex;
